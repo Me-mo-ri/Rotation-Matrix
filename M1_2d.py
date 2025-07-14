@@ -1,3 +1,4 @@
+from M1_plt_2d import vis2d_1, vis2d_2, vis2d_3, vis2d_4
 from rich.console import Console
 from rich.rule import Rule
 import numpy as np
@@ -38,7 +39,7 @@ def roMa2():
     nxA = xA * cos_t - yA * sin_t
     nyA = xA * sin_t + yA * cos_t
 
-    return nxA, nyA
+    return [nxA, nyA]
     
 def roMa3():
     orderedPairA = r.input("[bold green]🔢 | A")

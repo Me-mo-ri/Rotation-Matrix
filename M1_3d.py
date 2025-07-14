@@ -1,3 +1,4 @@
+from M1_plt_3d import vis3d
 from rich.console import Console
 from rich.rule import Rule
 import numpy as np
