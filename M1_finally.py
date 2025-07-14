@@ -26,4 +26,4 @@ elif Dim in ('3', '3차원', '3D', '3d'):
     C3D()
 
 else:
-    r.print(Rule("[bold red] ❌ | Error: invalidInput - Input must be 2 or 3", style="red"))
+    r.print(Rule(f"[bold red] ❌ | Error: {Exception}", style="red"))

@@ -1,4 +1,3 @@
-from M1_plt_3d import vis3d
 from rich.console import Console
 from rich.rule import Rule
 import numpy as np
@@ -10,7 +9,7 @@ def roMa3D():
     try:
         xA, yA = map(float, orderedPairA.split('(')[1].strip(')').split(', '))
     except Exception as e:
-        r.print(Rule("[bold red] ❌ | Error in calculating coordinates: A", style="red"))
+        r.print(Rule(f"[bold red] ❌ | Error: {e}", style="red"))
 
     theta = r.input("[bold green]📐 | Rotation Degree: ")
     theta_rad = np.radians(int(theta))
