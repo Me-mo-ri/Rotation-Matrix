@@ -6,10 +6,12 @@ r = Console()
 
 def roMa3D():
     orderedPairA = r.input("[bold green]🔢 | A")
+    print()
     try:
         xA, yA = map(float, orderedPairA.split('(')[1].strip(')').split(', '))
     except Exception as e:
         r.print(Rule(f"[bold red] ❌ | Error: {e}", style="red"))
+        print()
 
     theta = r.input("[bold green]📐 | Rotation Degree: ")
     theta_rad = np.radians(int(theta))

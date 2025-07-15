@@ -2,7 +2,12 @@ from rich.console import Console
 from rich.rule import Rule
 import numpy as np
 import matplotlib.pyplot as plt
-from sympy import E
+import matplotlib.font_manager as fm
+
+font_path = 'C:/Windows/Fonts/NanumGothic.ttf'
+font_name = fm.FontProperties(fname=font_path).get_name()
+
+plt.rc('font', family=font_name)
 
 r = Console()
 
@@ -19,30 +24,33 @@ def calPointRotation(x: float, y: float, theta: float):
 
 def getOrderedPair(prompt_text: str):
     while True:
-        ordered_pair_str = r.input(f"[bold green]🔢 | {prompt_text}: [/bold green]")
+        ordered_pair_str = r.input(f"[bold green]🔢 | {prompt_text}[/bold green]")
+        print()
         try:
-            parts = ordered_pair_str.strip().replace('A(', '').replace(')', '').split(',')
-            
+            parts = ordered_pair_str.strip().replace('(', '').replace(')', '').split(',')
+
             if len(parts) != 2:
-              r.print(Rule(f"[bold red] ❌ | Error: {Exception}", style="red"))
+                raise ValueError("Input must contain two values separated by a comma")
             
             x_val = float(parts[0].strip())
             y_val = float(parts[1].strip())
+            
             return x_val, y_val
+        
         except Exception as e:
             r.print(Rule(f"[bold red] ❌ | Error: {e} [/bold red]", style="red"))
+            print()
 
 def C2D():
-    r.print(Rule("[bold green] 📏 2차원 시뮬레이션 [/bold green]", style="green"))
-    r.print()
-
     while True:
         try:
-            cal_type = int(r.input("[bold green]📏 | Numbers: [/bold green]"))
-            if cal_type >= 1:
+            calType = int(r.input("[bold green]📏 | Numbers: [/bold green]"))
+            print()
+            if calType >= 1:
                 break
         except Exception as e:
-            r.print(Rule(f"[bold red] ❌ | Error: {e}[/bold red]", style="red"))
+            r.print(Rule(f"[bold red] ❌ | Error: {e} [/bold red]", style="red"))
+            print()
 
     messages = {
         1: "One point in 2nd Dimension",
@@ -51,63 +59,89 @@ def C2D():
         4: "Four points in 2nd Dimension",
     }
 
-    r.print(Rule(f"[bold yellow] {messages[cal_type]} [/bold yellow]", style="yellow"))
+    r.print(Rule(f"[bold yellow] {messages[calType]} [/bold yellow]", style="yellow"))
     r.print()
  
     while True:
         theta_str = r.input("[bold green]📐 | Rotation : [/bold green]")
+        print()
         try:
-            common_theta = float(theta_str)
+            inputTheta = float(theta_str)
             break
         except Exception as e:
             r.print(Rule(f"[bold red] ❌ | Error: {e} [/bold red]", style="red"))
+            print()
 
-    all_original_points = []
-    all_rotated_points = []
+    originalPoints = []
+    rotatedPoints = []
 
-    for i in range(cal_type):
-        r.print(f"\n[cyan]----- {i+1}번째 점 입력 ----- [/cyan]")
+    for i in range(calType):
+        r.print(Rule(f"\n[cyan] {i+1}번째 점 좌표 [/cyan]", style="cyan"))
+        print()
         
-        original_x, original_y = getOrderedPair(f"점 {chr(65+i)}") 
+        originalX, originalY = getOrderedPair(f"점 {chr(65+i)}") 
         
         X, Y = calPointRotation(
-            original_x, original_y, common_theta
+            originalX, originalY, inputTheta
         )
         
-        all_original_points.append((original_x, original_y))
-        all_rotated_points.append((X, Y))
+        originalPoints.append((originalX, originalY))
+        rotatedPoints.append((X, Y))
 
-        r.print(f"[green]원본 점 {chr(65+i)}: ([bold]{original_x:.2f}[/bold], [bold]{original_y:.2f}[/bold])[/green]")
+        r.print(f"[green]원본 점 {chr(65+i)}: ([bold]{originalX:.2f}[/bold], [bold]{originalY:.2f}[/bold])[/green]")
         r.print(f"[green]회전된 점 {chr(65+i)}: ([bold]{X:.2f}[/bold], [bold]{Y:.2f}[/bold])[/green]")
 
-    plt.figure(figsize=(8, 8))
-    max_val = 0
+    plt.figure()
+    maxVal = 0
 
-    for i in range(cal_type):
-        orig_x, orig_y = all_original_points[i]
-        rot_x, rot_y = all_rotated_points[i]
+    orig_xs_for_polygon = []
+    orig_ys_for_polygon = []
+    rot_xs_for_polygon = []
+    rot_ys_for_polygon = []
+
+    for i in range(calType):
+        origX, origY = originalPoints[i]
+        rotX, rotY = rotatedPoints[i]
         
         colors = ['red', 'blue', 'green', 'purple']
-        point_color = colors[i % len(colors)]
+        pointColor = colors[i % len(colors)]
 
-        plt.plot(orig_x, orig_y, 'o', color=point_color, markersize=8, label=f'원본 {chr(65+i)}')
-        plt.plot(rot_x, rot_y, 'X', color=point_color, markersize=8, label=f'회전 {chr(65+i)}')
+        plt.plot(origX, origY, 'o', color=pointColor, markersize=8, label=f'원본 {chr(65+i)}')
+        plt.plot(rotX, rotY, 'X', color=pointColor, markersize=8, label=f'회전 {chr(65+i)}')
         
-        plt.plot([0, orig_x], [0, orig_y], '--', color=point_color, alpha=0.6)
-        plt.plot([0, rot_x], [0, rot_y], '-', color=point_color, alpha=0.8)
+        plt.plot([0, origX], [0, origY], ':', color=pointColor, alpha=0.6)
+        plt.plot([0, rotX], [0, rotY], ':', color=pointColor, alpha=0.8)
 
-        max_val = max(max_val, abs(orig_x), abs(orig_y), abs(rot_x), abs(rot_y))
+        maxVal = max(maxVal, abs(origX), abs(origY), abs(rotX), abs(rotY))
 
-    padding = max_val * 0.2
-    plt.xlim(-max_val - padding, max_val + padding)
-    plt.ylim(-max_val - padding, max_val + padding)
+        orig_xs_for_polygon.append(origX)
+        orig_ys_for_polygon.append(origY)
+        rot_xs_for_polygon.append(rotX)
+        rot_ys_for_polygon.append(rotY)
+
+    if calType >= 3:
+        orig_xs_for_polygon.append(orig_xs_for_polygon[0])
+        orig_ys_for_polygon.append(orig_ys_for_polygon[0])
+        plt.plot(orig_xs_for_polygon, orig_ys_for_polygon, 'k-', linewidth=1.5, label='원본 도형')
+
+        rot_xs_for_polygon.append(rot_xs_for_polygon[0])
+        rot_ys_for_polygon.append(rot_ys_for_polygon[0])
+        plt.plot(rot_xs_for_polygon, rot_ys_for_polygon, 'k-', linewidth=1.5, label='회전된 도형')
+        
+    elif calType == 2:
+        plt.plot([originalPoints[0][0], originalPoints[1][0]], [originalPoints[0][1], originalPoints[1][1]], 'k-', label='원본 선분')
+        plt.plot([rotatedPoints[0][0], rotatedPoints[1][0]], [rotatedPoints[0][1], rotatedPoints[1][1]], 'k-', label='회전된 선분')
+
+    padding = maxVal * 0.2
+    plt.xlim(-maxVal - padding, maxVal + padding)
+    plt.ylim(-maxVal - padding, maxVal + padding)
     plt.axvline(0, color='gray', linewidth=0.5)
     plt.axhline(0, color='gray', linewidth=0.5)
     plt.grid(True, linestyle='--', alpha=0.7)
     plt.gca().set_aspect('equal', adjustable='box')
     
-    plt.title(f"2차원 {cal_type}개 점 회전: {common_theta}°")
-    plt.xlabel("X-axis")
-    plt.ylabel("Y-axis")
+    plt.title(f"2차원 {calType}개 점 회전: {inputTheta}°")
+    plt.xlabel("x축")
+    plt.ylabel("y축")
     plt.legend()
     plt.show()
