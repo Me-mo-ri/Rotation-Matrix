@@ -127,7 +127,7 @@ def C2D():
         rot_xs_for_polygon.append(rot_xs_for_polygon[0])
         rot_ys_for_polygon.append(rot_ys_for_polygon[0])
         plt.plot(rot_xs_for_polygon, rot_ys_for_polygon, 'k-', linewidth=1.5, label='회전된 도형')
-        
+
     elif calType == 2:
         plt.plot([originalPoints[0][0], originalPoints[1][0]], [originalPoints[0][1], originalPoints[1][1]], 'k-', label='원본 선분')
         plt.plot([rotatedPoints[0][0], rotatedPoints[1][0]], [rotatedPoints[0][1], rotatedPoints[1][1]], 'k-', label='회전된 선분')
@@ -143,5 +143,4 @@ def C2D():
     plt.title(f"2차원 {calType}개 점 회전: {inputTheta}°")
     plt.xlabel("x축")
     plt.ylabel("y축")
-    plt.legend()
     plt.show()
